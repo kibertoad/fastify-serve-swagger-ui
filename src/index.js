@@ -14,8 +14,8 @@ module.exports = fp(function(fastify, opts, next) {
   );
   opts.specification.type = opts.specification.type.toLowerCase();
   assert(
-    ["file", "url"].includes(opts.specification.type),
-    "specification.type is incorrect, should be any from ['file', 'url']"
+    ["file", "url", "absolutePath"].includes(opts.specification.type),
+    "specification.type is incorrect, should be any from ['file', 'url', 'absolutePath']"
   );
   assert(opts.path, "path is missing in the module options");
 
@@ -25,6 +25,7 @@ module.exports = fp(function(fastify, opts, next) {
       `url: "${(() => {
         let result;
         switch (opts.specification.type) {
+          case "absolutePath":
           case "file":
             result = `/${opts.path}/specification${path.extname(
               opts.specification.path
@@ -43,11 +44,18 @@ module.exports = fp(function(fastify, opts, next) {
   // if specification type is file - prepare the file content and declare the correspondent route
   if (opts.specification.type === "file") {
     files.specification = fs.readFileSync(
-      `${process.cwd()}/${opts.specification.path}`,
-      "utf8"
+        `${process.cwd()}/${opts.specification.path}`,
+        "utf8"
     );
+  }
 
-    fastify.get(
+  if (opts.specification.type === "absolutePath") {
+    files.specification = fs.readFileSync(opts.specification.path,"utf8"
+    );
+  }
+
+  if (["file", "absolutePath"].includes(opts.specification.type)) {
+  fastify.get(
       `/${opts.path}/specification${path.extname(opts.specification.path)}`,
       (request, reply) => {
         reply.send(files.specification);
