@@ -25,7 +25,7 @@ module.exports = fp(function(fastify, opts, next) {
       `url: "${(() => {
         let result;
         switch (opts.specification.type) {
-          case "absolutePath":
+          case "absolutepath":
           case "file":
             result = `/${opts.path}/specification${path.extname(
               opts.specification.path
@@ -49,12 +49,12 @@ module.exports = fp(function(fastify, opts, next) {
     );
   }
 
-  if (opts.specification.type === "absolutePath") {
+  if (opts.specification.type === "absolutepath") {
     files.specification = fs.readFileSync(opts.specification.path,"utf8"
     );
   }
 
-  if (["file", "absolutePath"].includes(opts.specification.type)) {
+  if (["file", "absolutepath"].includes(opts.specification.type)) {
   fastify.get(
       `/${opts.path}/specification${path.extname(opts.specification.path)}`,
       (request, reply) => {
