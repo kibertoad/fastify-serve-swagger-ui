@@ -14,8 +14,8 @@ module.exports = fp(function(fastify, opts, next) {
   );
   opts.specification.type = opts.specification.type.toLowerCase();
   assert(
-    ["file", "url"].includes(opts.specification.type),
-    "specification.type is incorrect, should be any from ['file', 'url']"
+    ["file", "url", "object"].includes(opts.specification.type),
+    "specification.type is incorrect, should be any from ['file', 'url', 'object']"
   );
   assert(opts.path, "path is missing in the module options");
 
@@ -55,7 +55,18 @@ module.exports = fp(function(fastify, opts, next) {
     );
   }
 
-  // server swagger-ui with the help of fastify-static
+  if (opts.specification.type === "object") {
+    files.specification = opts.specification.object
+
+    fastify.get(
+        `/${opts.path}/${opts.specification.filename}`,
+        (request, reply) => {
+          reply.send(files.specification);
+        }
+    );
+  }
+
+    // server swagger-ui with the help of fastify-static
   fastify.register(require("fastify-static"), {
     root: swaggerUiAssetPath,
     prefix: `/${opts.path}/`
