@@ -14,7 +14,7 @@ module.exports = fp(function(fastify, opts, next) {
   );
   opts.specification.type = opts.specification.type.toLowerCase();
   assert(
-    ["file", "url", "absolutePath"].includes(opts.specification.type),
+    ["file", "url", "absolutepath"].includes(opts.specification.type),
     "specification.type is incorrect, should be any from ['file', 'url', 'absolutePath']"
   );
   assert(opts.path, "path is missing in the module options");
