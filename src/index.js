@@ -73,7 +73,9 @@ module.exports = fp(function(fastify, opts, next) {
   fastify.addHook("onSend", (request, reply, payload, next) => {
     if (
       request.raw.originalUrl === `/${opts.path}/` ||
-      request.raw.originalUri === `/${opts.path}/index.html`
+      request.raw.originalUri === `/${opts.path}/index.html` ||
+      request.raw.url === `/${opts.path}/` ||
+      request.raw.uri === `/${opts.path}/index.html`
     ) {
       reply.header("Content-Type", "text/html; charset=UTF-8");
       payload = files.index;
